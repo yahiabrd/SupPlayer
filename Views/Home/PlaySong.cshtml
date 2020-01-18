@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@using SupPlayer.ViewModel
+@model List<PlaylistViewModel>
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    //recuperation du nom de la musique pour pouvoir la lire dans la section Scripts
+    var SongName = "";
+    foreach (var data in Model)
+    {
+        SongName = data.SongName;
+    }
+    var stringMusic = "/music/" + SongName + ".mp3";
+
+    //recup id next et previous song
+    int nextSong = (int)ViewData["nextSong"];
+    int prevSong = (int)ViewData["prevSong"];
+}
+
+@section Scripts{
+    <!-- librairie wavesurfer -->
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+
+    <script>
+        var wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: 'lightblue',
+            progressColor: 'blue'
+        });
+
+        function playPause() {
+            wavesurfer.playPause();
+        }
+
+        function muteUnmute() {
+            wavesurfer.toggleMute();
+        }
+        wavesurfer.load('@stringMusic');
+    </script>
+}
+
+<div class="contentsite" style="margin-top:20px;">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        if (Model.Count == 0)
+        {
+            <h2>You haven't access to play this song</h2>
+        }
+        else {
+            foreach (var data in Model)
+            {
+                <ul style="list-style:none;">
+                    <li>Playlist : @Html.ActionLink(data.PlaylistName, "Playlist", "Home", new { id = data.PlaylistID })</li>
+                    <li><b>Music : @data.SongName</b></li>
+                </ul>
+
+                <div id="waveform"></div>
+                <div class="col text-center">
+
+                    @if (prevSong != 0)
+                    {
+                        <a href="/Home/PlaySong/@ViewData["prevSong"]" class="btn btn-primary" role="button">Previous</a>
+                    }
+
+                    <button onclick="playPause();" class="btn btn-primary">Play/Pause</button>
+                    <button onclick="muteUnmute();" class="btn btn-primary">Mute/Unmute</button>
+
+                    @if (nextSong != 0)
+                    {
+                        <a href="/Home/PlaySong/@ViewData["nextSong"]" class="btn btn-primary" role="button">Next</a>
+                    }
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <h2> You must be logged in to access this section.</h2>
+    }
+</div>

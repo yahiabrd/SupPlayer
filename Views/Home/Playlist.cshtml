@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@using SupPlayer.ViewModel
+@model List<PlaylistViewModel>
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<div class="contentsite" style="margin-top:20px;">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h3>Create playlist</h3>
+
+        <p>Use this section to create and manage your playlists</p>
+
+        <form method="post" asp-action="Create_Playlist">
+            <input type="hidden" name="PlaylistUser" value="@UserManager.GetUserName(User)" />
+            <div class="form-group">
+                <input type="text" class="form-control" name="PlaylistName" placeholder="Enter playlist name" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create the Playlist</button>
+        </form>
+
+        <h3>List of playlist</h3>
+        @if (Model.Count == 0)
+        {
+            <p>You haven't added a playlist yet</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var data in Model)
+                    {
+                    <li class="list-group-item">
+                        @Html.ActionLink(data.PlaylistName, "Playlist", "Home", new { id = data.PlaylistID })
+                        [@Html.ActionLink("delete", "Delete", "Home", new { id = data.PlaylistID })]
+                        -
+                        [@Html.ActionLink("rename", "Rename", "Home", new { id = data.PlaylistID })]
+                    </li>
+                    }
+            </ul>
+        }
+    }
+    else
+    {
+        <h2> You must be logged in to access this section.</h2>
+    }
+</div>

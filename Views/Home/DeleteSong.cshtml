@@ -1,0 +1,20 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@using SupPlayer.ViewModel
+@model List<PlaylistViewModel>
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+<div class="contentsite" style="margin-top:20px;">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h2>@ViewData["message"]</h2>
+    }
+    else
+    {
+        <h2>You must be logged in to access this section.</h2>
+    }
+</div>
+

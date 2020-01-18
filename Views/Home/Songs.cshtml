@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@using SupPlayer.ViewModel
+@model List<PlaylistViewModel>
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    //pour recuperer le nom et l'id de la playlist du song sans avoir a faire un foreach sur tout le fichier
+    var pName = "";
+    var pID = 0;
+}
+
+<div class="contentsite" style="margin-top:20px;">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        //on recupere nom et l'id de la playlist du song
+        @foreach (var data in Model)
+        {
+            pName = data.PlaylistName;
+            pID = data.PlaylistID;
+        }
+        //securisation
+        if(!string.IsNullOrEmpty(pName))
+        {
+            <h3>Playlist : @pName</h3>
+
+            <p>Use this section to add songs to this playlist</p>
+
+            <form method="post" enctype="multipart/form-data" asp-action="Create_Song">
+                <input type="hidden" name="PlaylistID" value="@pID" />
+                <div class="form-group">
+                    <input type="text" name="SongName" class="form-control" placeholder="Enter song name" />
+                </div>
+
+                <p>Upload a <b>mp3</b> file:</p>
+                <div class="form-group">
+                    <input type="file" name="file" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary">Add the Song</button>
+            </form>
+
+            <h3>List of songs in this playlist :</h3>
+
+            <ul class="list-group">
+                @foreach (var data in Model)
+                {
+                    //on affiche pas les infos du default song
+                    @if (data.SongName != "Default song")
+                    {
+                        <li class="list-group-item">
+                            @data.SongName
+                            [@Html.ActionLink("play", "PlaySong", "Home", new { id = data.SongID })]
+                            -
+                            [@Html.ActionLink("delete", "DeleteSong", "Home", new { id = data.SongID })]
+                        </li>
+                    }
+                }
+            </ul>
+        }
+        else
+        {
+            <script>location.reload();</script>
+        }
+    }
+    else
+    {
+        <h2> You must be logged in to access this section.</h2>
+    }
+</div>

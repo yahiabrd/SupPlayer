@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@using SupPlayer.ViewModel
+@model List<PlaylistViewModel>
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<div class="contentsite" style="margin-top:20px;">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        if(Model.Count == 0)
+        {
+            <h2>You haven't access to this playlist</h2>
+        }
+        else 
+        {
+            @foreach (var data in Model)
+            {
+                <h3>Playlist  : @data.PlaylistName</h3>
+
+                <p>Use this section to rename this playlist</p>
+
+                <form method="post" asp-action="Rename_Playlist">
+                    <input type="hidden" name="PlaylistID" value="@data.PlaylistID" />
+                    <div class="form-group">
+                        <input type="text" name="PlaylistName" class="form-control" placeholder="Enter new playlist name" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update the Playlist</button>
+                </form>
+             }
+        }
+    }
+    else
+    {
+        <h2>You must be logged in to access this section.</h2>
+    }
+</div>
