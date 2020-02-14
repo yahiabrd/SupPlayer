@@ -1,5 +1,6 @@
-SupPlayer project using ASP.NET MVC and the library wavesurfer.js
-You can use this web app to create playlists, add songs ect...
+SupPlayer project using ASP.NET MVC and the library wavesurfer.js.
+
+You can use this web app to create playlists, add songs, play musics ect...
 
 
 ![Image](https://i.ibb.co/D9RV148/snap1.png)
